@@ -1,15 +1,37 @@
 #include <stdio.h>
 
 #define MAX_FILENAMESIZE 64
+#define MAX_LINELENGTH 80
+
+void trim_instruction(char *line)
+{
+    char *copy = line;
+
+    while (*copy != '\0')
+    {
+        if (*copy == '/' && *(copy + 1) == '/')
+        {
+            *line++ = '\n';
+            break;
+        }
+
+        if (*copy != ' ' && *copy != '\t')
+        {
+            *line++ = *copy;
+        }
+        copy++;
+    }
+    *line = '\0';
+}
 
 int main(int argc, char *argv[])
 {
-    char output_file[MAX_FILENAMESIZE];
+    char output_file[MAX_FILENAMESIZE], line[MAX_LINELENGTH];
     FILE *readptr, *writeptr;
 
     if (argc < 2)
     {
-        printf("Err:\nProgram requires at least one inputfilename argument: './hackasm <file>'\n");
+        printf("Err:\nProgram requires at least one input filename argument: './hackasm <file>'\n");
         return -1;
     }
 
@@ -26,10 +48,20 @@ int main(int argc, char *argv[])
     }
     else
     {
-        sprintf(output_file, "%.63s", argv[2]);
+        sprintf(output_file, "%s", argv[2]);
     }
 
     writeptr = fopen(output_file, "w");
+
+    while (fgets(line, sizeof line, readptr) != NULL)
+    {
+        trim_instruction(line);
+        if (*line != '\n')
+        {
+            printf("%s", line);
+            fprintf(writeptr, "%s", line);
+        }
+    }
 
     fclose(readptr);
     fclose(writeptr);
