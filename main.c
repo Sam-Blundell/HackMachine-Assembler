@@ -1,47 +1,31 @@
 #include <stdio.h>
+#include <string.h>
+#include <errno.h>
+#include "utils.h"
 
 #define MAX_FILENAMESIZE 64
 #define MAX_LINELENGTH 80
+#define BIN_STRING_LENGTH 18
 
-void trim_instruction(char *line)
+int main(int argc, char **argv)
 {
-    char *copy = line;
-
-    while (*copy != '\0')
-    {
-        if (*copy == '/' && *(copy + 1) == '/')
-        {
-            *line++ = '\n';
-            break;
-        }
-
-        if (*copy != ' ' && *copy != '\t')
-        {
-            *line++ = *copy;
-        }
-        copy++;
-    }
-    *line = '\0';
-}
-
-int main(int argc, char *argv[])
-{
-    char output_file[MAX_FILENAMESIZE], line[MAX_LINELENGTH];
+    char output_file[MAX_FILENAMESIZE], instr[MAX_LINELENGTH], bin[BIN_STRING_LENGTH];
     FILE *readptr, *writeptr;
 
     if (argc < 2)
     {
-        printf("Err:\nProgram requires at least one input filename argument: './hackasm <file>'\n");
+        fprintf(stderr, "Error: Program requires at least one input filename argument.\nUsage: '%s <file>'\n", argv[0]);
         return -1;
     }
 
     readptr = fopen(argv[1], "r");
     if (readptr == NULL)
     {
-        printf("ERR: Input file not found in directory.\n");
+        fprintf(stderr, "Error: %s\n", strerror(errno));
         return -1;
     }
 
+    //  if no filename argument, default to "out.hack"
     if (argv[2] == NULL)
     {
         sprintf(output_file, "out.hack");
@@ -53,14 +37,18 @@ int main(int argc, char *argv[])
 
     writeptr = fopen(output_file, "w");
 
-    while (fgets(line, sizeof line, readptr) != NULL)
+    while (fgets(instr, sizeof instr, readptr) != NULL)
     {
-        trim_instruction(line);
-        if (*line != '\n')
+        trim_instruction(instr);
+        if (*instr == '\n')
+            continue;
+
+        if (*instr == '@')
         {
-            printf("%s", line);
-            fprintf(writeptr, "%s", line);
         }
+
+        // printf("%s", instr);
+        fprintf(writeptr, "%s", instr);
     }
 
     fclose(readptr);
