@@ -40,15 +40,17 @@ int main(int argc, char **argv)
     while (fgets(instr, sizeof instr, readptr) != NULL)
     {
         trim_instruction(instr);
+
         if (*instr == '\n')
             continue;
 
         if (*instr == '@')
         {
+            assemble_a_instruction(instr, bin);
         }
 
         // printf("%s", instr);
-        fprintf(writeptr, "%s", instr);
+        fprintf(writeptr, "%s", bin);
     }
 
     fclose(readptr);
