@@ -48,8 +48,11 @@ int main(int argc, char **argv)
         {
             assemble_a_instruction(instr, bin);
         }
+        else
+        {
+            assemble_c_instruction(instr, bin);
+        }
 
-        // printf("%s", instr);
         fprintf(writeptr, "%s", bin);
     }
 
