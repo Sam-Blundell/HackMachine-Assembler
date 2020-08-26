@@ -50,6 +50,7 @@ void assemble_a_instruction(char instr[], char bin[])
 #define JUMP_SIZE 4
 
 void parse_destination(char[], char[]);
+void parse_jump(char[], char[]);
 
 void assemble_c_instruction(char instr[], char bin[])
 {
@@ -60,15 +61,21 @@ void assemble_c_instruction(char instr[], char bin[])
 
     char *token;
 
+    
     if (strstr(instr, "=") != NULL)
     {
         token = strtok_r(instr, "=", &instr);
         parse_destination(token, dest);
+	
     }
     if (strstr(instr, ";") != NULL)
     {
         token = strtok_r(instr, ";", &instr);
-        // parse_jump(instr, jump);
+        parse_jump(instr, jump);
+	// parse_comp(token, comp);
+    } else
+    {
+	// parse_comp(instr, comp);
     }
 
     for (int i = 0; i < 3; i++)
@@ -88,7 +95,7 @@ void assemble_c_instruction(char instr[], char bin[])
 
     for (int i = 13; i < 16; i++)
     {
-        bin[i] = '0';
+        bin[i] = jump[i - 13];
     }
 
     bin[16] = '\n';
@@ -101,11 +108,30 @@ void parse_destination(char mnemonic[], char dest[])
 
     for (int i = 0; i < 7; i++)
     {
-        if (strcmp(mnemonic, types[i]) == 0)
+        if (strncmp(mnemonic, types[i], 3) == 0)
         {
             
 	    for (int j = 0; j < 3; j++) {
 	    	dest[j] = bins[i][j];
+	    }
+            break;
+        }
+    }
+}
+
+
+void parse_jump(char mnemonic[], char jump[])
+{
+    char *types[] = {"JGT", "JEQ", "JGE", "JLT", "JNE", "JLE", "JMP"};
+    char *bins[] = {"001", "010", "011", "100", "101", "110", "111"};
+
+    for (int i = 0; i < 7; i++)
+    {
+	
+        if (strncmp(mnemonic, types[i], 3) == 0)
+        {
+	    for (int j = 0; j < 3; j++) {
+	    	jump[j] = bins[i][j];
 	    }
             break;
         }
