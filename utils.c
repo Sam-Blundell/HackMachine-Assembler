@@ -28,7 +28,7 @@ void assemble_a_instruction(char instr[], char bin[])
 
     int tempint = strtol((instr + 1), NULL, 10);
 
-    for (int i = 16; i > 0; i--)
+    for (int i = 15; i > 0; i--)
     {
         if (tempint % 2 == 1)
         {
@@ -42,69 +42,72 @@ void assemble_a_instruction(char instr[], char bin[])
     };
 
     bin[0] = '0';
-    bin[17] = '\n';
+    bin[16] = '\n';
 }
 
-#define DEST_SIZE 3
-#define COMP_SIZE 7
-#define JUMP_SIZE 3
+#define DEST_SIZE 4
+#define COMP_SIZE 8
+#define JUMP_SIZE 4
+
+void parse_destination(char[], char[]);
 
 void assemble_c_instruction(char instr[], char bin[])
 {
 
-    // dest=comp;jump
     char dest[DEST_SIZE] = "000";
     char comp[COMP_SIZE];
     char jump[JUMP_SIZE] = "000";
 
     char *token;
 
-    printf("%s", instr);
-
     if (strstr(instr, "=") != NULL)
     {
         token = strtok_r(instr, "=", &instr);
-        printf("%s <- destination\n%s <- computation\n", token, instr);
+        parse_destination(token, dest);
     }
     if (strstr(instr, ";") != NULL)
     {
         token = strtok_r(instr, ";", &instr);
-        printf("%s <- computation\n%s <- jump\n", token, instr);
+        // parse_jump(instr, jump);
     }
-    // if (strstr(instr, ";") != NULL)
-    // {
-    //     token = strtok_r(instr, ";", &instr);
-    //     printf("%s <- token\n%s <- remainder\n", token, instr);
-    // }
 
-    // if (strstr(instr, "=") != NULL)
-    // {
-    //     desttoken = strtok(instr, "=");
-    //     comptoken = strtok(NULL, "\n");
-    // }
-    // else if (strstr(instr, ";") != NULL)
-    // {
-    //     comptoken = strtok(instr, ";");
-    //     jumptoken = strtok(NULL, "\n");
-    // }
+    for (int i = 0; i < 3; i++)
+    {
+        bin[i] = '1';
+    }
 
-    bin[0] = '1';
-    for (int i = 1; i < 17; i++)
+    for (int i = 3; i < 10; i++)
     {
         bin[i] = '0';
     }
-    bin[17] = '\n';
+
+    for (int i = 10; i < 13; i++)
+    {
+        bin[i] = dest[i - 10];
+    }
+
+    for (int i = 13; i < 16; i++)
+    {
+        bin[i] = '0';
+    }
+
+    bin[16] = '\n';
 }
 
-// struct lookup
-// {
-//     char *name;
-//     char *bin;
-// };
+void parse_destination(char mnemonic[], char dest[])
+{
+    char *types[] = {"M", "D", "MD", "A", "AM", "AD", "AMD"};
+    char *bins[] = {"001", "010", "011", "100", "101", "110", "111"};
 
-// void parse_dest(char dest[])
-// {
-//     struct lookup dest
-//     {
-//     }
-// }
+    for (int i = 0; i < 7; i++)
+    {
+        if (strcmp(mnemonic, types[i]) == 0)
+        {
+            
+	    for (int j = 0; j < 3; j++) {
+	    	dest[j] = bins[i][j];
+	    }
+            break;
+        }
+    }
+}

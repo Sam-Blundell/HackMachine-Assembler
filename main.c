@@ -5,16 +5,20 @@
 
 #define MAX_FILENAMESIZE 64
 #define MAX_LINELENGTH 80
-#define BIN_STRING_LENGTH 18
+#define BIN_STRING_LENGTH 17
 
 int main(int argc, char **argv)
 {
-    char output_file[MAX_FILENAMESIZE], instr[MAX_LINELENGTH], bin[BIN_STRING_LENGTH];
+    char output_file[MAX_FILENAMESIZE], instr[MAX_LINELENGTH],
+        bin[BIN_STRING_LENGTH];
+
     FILE *readptr, *writeptr;
 
     if (argc < 2)
     {
-        fprintf(stderr, "Error: Program requires at least one input filename argument.\nUsage: '%s <file>'\n", argv[0]);
+        fprintf(stderr, "Error: Program requires at least one input filename\
+        argument.\nUsage: '%s <file>'\n",
+                argv[0]);
         return -1;
     }
 
