@@ -16,8 +16,8 @@ int main(int argc, char **argv)
 
     if (argc < 2)
     {
-        fprintf(stderr, "Error: Program requires at least one input filename\
-        argument.\nUsage: '%s <file>'\n",
+        fprintf(stderr, "Error: Program requires at least one input\
+                        filename argument.\nUsage: '%s <file>'\n",
                 argv[0]);
         return -1;
     }
